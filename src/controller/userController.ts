@@ -62,6 +62,53 @@ const getAllUser = expressAsyncHandler(async (req: Request, res: Response) => {
     }
 })
 
+const getUserById = expressAsyncHandler(async (req: Request, res: Response) => { 
+    const user = await User.findById(req.params.id);
+    console.log(req.params.id)
+    if (!user) {
+        res.status(404);
+        throw new Error("User not found");
+    }
+    res.status(200).json({
+        message: "User found",
+        data: user
+    } );
+})
+const deleteUser = expressAsyncHandler(async (req: Request, res: Response) => { 
+    try {
+        const deleterUser = await User.findByIdAndDelete(req.params.id);
+        if (!deleterUser) { 
+            res.status(404);
+            throw new Error("User not found");
+        }
+        res.status(200).json({
+            message: "User deleted successfully",
+        });
+        
+    } catch (error) {
+        throw new Error("Something went wrong");
+        
+    }
+})
+
+const updateUser = expressAsyncHandler(async (req: Request, res: Response) => { 
+    try {
+        const { id } = req.params;
+        const updateUser = await User.findByIdAndUpdate(id, {
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
+
+        }, { new: true });
+
+        res.status(200).json({
+            message: "User updated successfully",
+            data: updateUser
+        });
+        
+    } catch (error) {
+        throw new Error("  Something went wrong");
+    }
+})
 const logout = expressAsyncHandler(async (req: Request, res: Response) => { 
     try {
         req.session = null;
@@ -72,4 +119,9 @@ const logout = expressAsyncHandler(async (req: Request, res: Response) => {
         throw new Error("Something went wrong");
     }
 })
-export { register , login, getAllUser,logout}
+export {
+    register, login,
+    getAllUser, logout,
+    getUserById, deleteUser,
+    updateUser
+}
