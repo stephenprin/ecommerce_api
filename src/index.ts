@@ -2,12 +2,14 @@ import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import database from './config/database';
-database();
+
 
 import { auth } from './routes';  
 import { errorHandler, notFound } from './middlewares/errorHandle';
+import cookieSession from 'cookie-session';
  
 dotenv.config();
+database();
 
 
 const app: Express = express();
@@ -20,7 +22,11 @@ app.use(cors(
         
     }
 ));
-
+app.use(cookieSession({
+  signed: false,
+  secure: false
+  
+}));
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Express + TypeScript Server');

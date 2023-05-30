@@ -19,7 +19,7 @@ const register = expressAsyncHandler(async (req: Request, res: Response) => {
     }
 })
 
-const login = expressAsyncHandler(async (req: Request, res: Response) => { 
+const login = expressAsyncHandler(async ( req: Request, res: Response) => { 
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -35,10 +35,10 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
         throw new Error("Incorrect email or password");
     }
     const userJwt = genereateToken(user.id, user.email);
-    
     req.session = {
         jwt: userJwt
-    }
+     }
+
     res.status(200).json({
         message: "User logged in successfully",
         data: {
@@ -49,4 +49,27 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
     
 })
 
-export { register , login}
+
+const getAllUser = expressAsyncHandler(async (req: Request, res: Response) => { 
+    try {
+        const users = await User.find({});
+    res.status(200).json({
+        message: "All users",
+        data: users
+    });
+    } catch (error) {
+        throw new Error("Something went wrong");
+    }
+})
+
+const logout = expressAsyncHandler(async (req: Request, res: Response) => { 
+    try {
+        req.session = null;
+        res.status(200).json({
+            message: "User logged out successfully"
+        })
+    } catch (error) {
+        throw new Error("Something went wrong");
+    }
+})
+export { register , login, getAllUser,logout}
