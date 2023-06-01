@@ -4,13 +4,14 @@ import {
     getAllUser, deleteUser,
     login, logout, getUserById,updateUser
 } from "../controller/userController";
-import {}  from "../controller/userController";
+import { auth } from "../middlewares/authMiddleware";
+import {requestAuth} from "../middlewares/requestAuth";
 
 const router = express.Router();
 
 router.post("/register", register)
 router.post("/login", login)
-router.get("/get-all-user", getAllUser)
+router.get("/get-all-user",auth,requestAuth, getAllUser)
 router.post("/logout", logout)
 router.get("/get-user/:id", getUserById)
 router.delete("/ /:id", deleteUser) 

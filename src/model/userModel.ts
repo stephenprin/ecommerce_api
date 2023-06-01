@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+import { time } from 'console';
 
 
 
@@ -11,6 +12,10 @@ interface IUser extends mongoose.Document {
     mobile: string; 
     password: string;
     role: string;
+    cart: Array<string | number>;
+    address: Array<string>;
+    wishlist: Array<string>;
+    
 
  
 }
@@ -48,7 +53,23 @@ interface IUser extends mongoose.Document {
      role: {
          type: String,
          default: "user"
-     }
+     },
+     cart: {
+         type: Array,
+            default: []
+     },
+     address: [
+         {
+             type: mongoose.Schema.Types.ObjectId,
+                ref: "Address"
+         }
+     ],
+     wishlist: [
+         {
+             type: mongoose.Schema.Types.ObjectId,
+                ref: "Product"
+            }
+        ]
     
      
  },
@@ -60,8 +81,10 @@ interface IUser extends mongoose.Document {
             delete ret.password;
             delete ret.__v;
         }
-    }
-}
+     },
+     timestamps: true
+     },
+ 
  
 );
  
