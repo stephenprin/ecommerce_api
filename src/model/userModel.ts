@@ -16,6 +16,7 @@ export interface IUser extends mongoose.Document {
     address: Array<string>;
     wishlist: Array<string>;
     isBlocked: boolean;
+    refreshToken: string;
 
 
  
@@ -75,7 +76,12 @@ export interface IUser extends mongoose.Document {
              type: mongoose.Schema.Types.ObjectId,
                 ref: "Product"
             }
-        ]
+     ]
+     ,
+     refreshToken: {
+         type: String,
+         
+     }
     
      
  },

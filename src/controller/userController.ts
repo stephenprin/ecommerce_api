@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import User from '../model/userModel';
 import expressAsyncHandler from 'express-async-handler';
-import genereateToken from '../config/jwtToken';    
+import generateToken from '../config/jwtToken';    
 import validateMongooseId from '../utils/validateMongoseId';
+import jwt from 'jsonwebtoken';
 
 
 const register = expressAsyncHandler(async (req: Request, res: Response) => { 
@@ -35,7 +36,7 @@ const login = expressAsyncHandler(async ( req: Request, res: Response) => {
         res.status(401);
         throw new Error("Incorrect email or password");
     }
-    const userJwt = genereateToken(user.id, user.email);
+    const userJwt = generateToken(user.id, user.email);
     req.session = {
         jwt: userJwt
      }
@@ -151,6 +152,35 @@ const unBlockUser = expressAsyncHandler(async (req: Request, res: Response) => {
         })
     }
 })
+
+const refreshToken = expressAsyncHandler(async (req: Request, res: Response) => { 
+    const refreshToken = req.session?.jwt;
+    if (!refreshToken) {  
+        res.status(401);
+        throw new Error("You are not authenticated");
+    }
+    
+    try {
+        const payload = jwt.verify(refreshToken, process.env.JWT_SECRET! );
+        const user = await User.findOne({ payload });
+
+        if (!user) {
+            res.status(401);
+            throw new Error("user not found");
+        }
+        const newAccessToken = generateToken(user.id, user.email);
+        res.status(200).json({
+            message: "Token refreshed successfully",
+            accessToken: newAccessToken
+        })
+    } catch (error) {
+        res.status(401);
+        throw new Error("You are not authenticated");
+    }
+})
+
+
+
 const logout = expressAsyncHandler(async (req: Request, res: Response) => { 
     try {
         req.session = null;
@@ -166,5 +196,6 @@ export {
     getAllUser, logout,
     getUserById, deleteUser,
     updateUser,
-    blockUser, unBlockUser
+    blockUser, unBlockUser,
+    refreshToken
 }

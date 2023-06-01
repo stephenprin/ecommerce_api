@@ -40,7 +40,7 @@ const auth = expressAsyncHandler(async (req: Request, res: Response, next: NextF
 const isAdmin = expressAsyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const { email } = req.user as userPayload;
     const adminUser = await User.findOne({ email: email });
-    console.log(adminUser)
+    
     if (adminUser?.role === "admin") { 
         next()
     } else {
