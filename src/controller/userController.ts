@@ -109,6 +109,41 @@ const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
         throw new Error("  Something went wrong");
     }
 })
+const blockUser = expressAsyncHandler(async (req: Request, res: Response) => { 
+    const { id } = req.params;
+    try {
+        const blockUser = await User.findByIdAndUpdate(id, {
+            isBlocked: true
+        }, { new: true });
+        res.status(200).json({
+            message: "User blocked successfully",
+            data: blockUser
+        })
+        
+    } catch (error) {
+        res.status(404).json({
+            message: "User not found",
+            error
+        })
+    }
+})
+const unBlockUser = expressAsyncHandler(async (req: Request, res: Response) => { 
+    const { id } = req.params;
+    try {
+        const unblockUser = await User.findByIdAndUpdate(id, {
+            isBlocked: false
+        }, { new: true });
+        res.status(200).json({
+            message: "User unblocked successfully",
+            data: unblockUser
+        })
+    } catch (error) {
+        res.status(404).json({
+            message: "User not found",
+            error
+        })
+    }
+})
 const logout = expressAsyncHandler(async (req: Request, res: Response) => { 
     try {
         req.session = null;
@@ -123,5 +158,6 @@ export {
     register, login,
     getAllUser, logout,
     getUserById, deleteUser,
-    updateUser
+    updateUser,
+    blockUser, unBlockUser
 }

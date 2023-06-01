@@ -15,6 +15,7 @@ export interface IUser extends mongoose.Document {
     cart: Array<string | number>;
     address: Array<string>;
     wishlist: Array<string>;
+    isBlocked: boolean;
 
 
  
@@ -54,6 +55,11 @@ export interface IUser extends mongoose.Document {
          type: String,
          default: "user"
      },
+     isBlocked: {
+         type: Boolean,
+            default: false
+     },
+
      cart: {
          type: Array,
             default: []
