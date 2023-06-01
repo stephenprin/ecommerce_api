@@ -4,7 +4,7 @@ import { time } from 'console';
 
 
 
-interface IUser extends mongoose.Document { 
+export interface IUser extends mongoose.Document { 
     [x: string]: any;
     firstname: string;
     lastname: string;
@@ -15,7 +15,7 @@ interface IUser extends mongoose.Document {
     cart: Array<string | number>;
     address: Array<string>;
     wishlist: Array<string>;
-    
+
 
  
 }
