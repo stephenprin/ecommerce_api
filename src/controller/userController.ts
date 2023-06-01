@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import User from '../model/userModel';
 import expressAsyncHandler from 'express-async-handler';
 import genereateToken from '../config/jwtToken';    
+import validateMongooseId from '../utils/validateMongoseId';
 
 
 const register = expressAsyncHandler(async (req: Request, res: Response) => { 
@@ -62,9 +63,12 @@ const getAllUser = expressAsyncHandler(async (req: Request, res: Response) => {
     }
 })
 
-const getUserById = expressAsyncHandler(async (req: Request, res: Response) => { 
-    const user = await User.findById(req.params.id);
-    console.log(req.params.id)
+const getUserById = expressAsyncHandler(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    validateMongooseId(id)
+    const user = await User.findById({ id: id });
+   
+   
     if (!user) {
         res.status(404);
         throw new Error("User not found");
@@ -94,6 +98,7 @@ const deleteUser = expressAsyncHandler(async (req: Request, res: Response) => {
 const updateUser = expressAsyncHandler(async (req: Request, res: Response) => { 
     try {
         const { id } = req.params;
+        validateMongooseId(id)
         const updateUser = await User.findByIdAndUpdate(id, {
             firstname: req.body.firstname,
             lastname: req.body.lastname,
@@ -111,6 +116,7 @@ const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
 })
 const blockUser = expressAsyncHandler(async (req: Request, res: Response) => { 
     const { id } = req.params;
+    validateMongooseId(id)
     try {
         const blockUser = await User.findByIdAndUpdate(id, {
             isBlocked: true
@@ -129,6 +135,7 @@ const blockUser = expressAsyncHandler(async (req: Request, res: Response) => {
 })
 const unBlockUser = expressAsyncHandler(async (req: Request, res: Response) => { 
     const { id } = req.params;
+    validateMongooseId(id)
     try {
         const unblockUser = await User.findByIdAndUpdate(id, {
             isBlocked: false
