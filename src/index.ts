@@ -4,7 +4,7 @@ import cors from 'cors';
 import database from './config/database';
 
 
-import { auth } from './routes';  
+import { auth, product } from './routes';  
 import { errorHandler, notFound } from './middlewares/errorHandle';
 import cookieSession from 'cookie-session';
  
@@ -34,6 +34,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use("/api/auth", auth);
+app.use("/api/product", product);
 
 app.use(notFound);
 app.use(errorHandler);
