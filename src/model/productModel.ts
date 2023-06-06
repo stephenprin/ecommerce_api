@@ -92,10 +92,10 @@ export interface IProduct extends mongoose.Document {
         }
      },
      timestamps: true
-     },
+  },
  
  
- );
+ ); 
 
 //Export the model
 const Product = mongoose.model<IProduct>('Product', productSchema);

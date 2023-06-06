@@ -10,9 +10,11 @@ import cookieSession from 'cookie-session';
  
 dotenv.config();
 database();
+import morgan from 'morgan';
 
 
 const app: Express = express();
+app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors(
     {
