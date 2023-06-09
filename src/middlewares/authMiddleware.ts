@@ -13,7 +13,7 @@ interface userPayload {
 declare global { 
     namespace Express { 
         interface Request { 
-            user?: userPayload;
+            user: userPayload;
         }
     }
 }
@@ -26,6 +26,7 @@ const auth = expressAsyncHandler(async (req: Request, res: Response, next: NextF
         const payload = jwt.verify(req.session.jwt, process.env.JWT_SECRET!) as userPayload;
         
         req.user = payload;
+
 
         
     } catch (error) { 

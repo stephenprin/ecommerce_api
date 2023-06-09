@@ -4,6 +4,9 @@ import expressAsyncHandler from 'express-async-handler';
 import generateToken from '../config/jwtToken';    
 import validateMongooseId from '../utils/validateMongoseId';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+
+
 
 
 const register = expressAsyncHandler(async (req: Request, res: Response) => { 
@@ -181,6 +184,45 @@ const refreshToken = expressAsyncHandler(async (req: Request, res: Response) => 
 
 
 
+const updatePassword = expressAsyncHandler(async (req: Request, res: Response) => {
+    const { id } = req.user;
+    const { password } = req.body;
+    validateMongooseId(id);
+
+    try {
+        const user = await User.findById(id);
+
+        if (!password) {
+            res.status(400).json({ message: "Please provide a password" });
+            return;
+        }
+
+        if (!user) {
+            res.status(404).json({ message: "User not found" });
+            return;
+        }
+
+        const isPasswordMatch = await user.correctPassword (password, user.password);
+
+        if (isPasswordMatch) {
+            res.status(400).json({ message: "Please provide a new password" });
+            return;
+        }
+
+        user.password = password;
+        const updatedUser = await user.save();
+
+        res.status(200).json({
+            message: "Password updated successfully",
+            data: updatedUser
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: "Something went wrong" });
+    }
+});
+
+
 const logout = expressAsyncHandler(async (req: Request, res: Response) => { 
     try {
         req.session = null;
@@ -197,5 +239,6 @@ export {
     getUserById, deleteUser,
     updateUser,
     blockUser, unBlockUser,
-    refreshToken
+    refreshToken,
+    updatePassword
 }

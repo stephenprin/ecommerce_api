@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
-import { time } from 'console';
+import crypto from 'crypto';
 
 
 
@@ -17,6 +17,9 @@ export interface IUser extends mongoose.Document {
     wishlist: Array<string>;
     isBlocked: boolean;
     refreshToken: string;
+    passwordChangedAt: Date;
+    passwordResetToken: string;
+    passwordResetExpires: Date;
 
 
  
@@ -81,7 +84,11 @@ export interface IUser extends mongoose.Document {
      refreshToken: {
          type: String,
          
-     }
+     },
+     passwordChangedAt: Date,
+     passwordResetToken: String,
+     passwordResetExpires: Date,
+
     
      
  },
@@ -116,7 +123,15 @@ userSchema.methods.correctPassword = async function (enteredPassword: string, us
     } catch (error) {
         return error
     }
- }
+}
+ 
+userSchema.methods.createPasswordResetToken = function async () { 
+    const user = this;
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    user.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+    user.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+    return resetToken;
+}
 
 
 const User = mongoose.model<IUser>('User', userSchema);

@@ -6,7 +6,8 @@ import {
     getUserById,
     updateUser,
     unBlockUser,
-    blockUser,refreshToken
+    blockUser, refreshToken,
+    updatePassword
     
 } from "../controller/userController";
 import { auth, isAdmin } from "../middlewares/authMiddleware";
@@ -24,6 +25,7 @@ router.put("/update-user/:id", auth, requestAuth, updateUser)
 router.put("/block-user/:id" ,auth,requestAuth, isAdmin, blockUser) 
 router.put("/unblock-user/:id", auth, requestAuth, isAdmin, unBlockUser)
 router.get("/refresh-token", refreshToken)
+router.put("/password", auth, requestAuth, updatePassword)
 
 export default router;
 
