@@ -270,6 +270,26 @@ const resetPassword = expressAsyncHandler(async (req: Request, res: Response) =>
     const { token } = req.params;
     const { password } = req.body;
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+    try {
+        const user = await User.findOne({ passwordResetToken: hashedToken, passwordResetExpires: { $gt: Date.now() } });
+        if(!user){
+            throw new Error("Token is invalid or has expired");
+        }
+        user.password = password;
+        user.passwordResetToken = undefined;
+        user.passwordResetExpires = undefined;
+        await user.save();
+        res.status(200).json({
+            message: "Password reset successfully",
+            data: user
+        });
+    
+   } catch (error) {
+        res.status(500).json({
+            message: "Something went wrong",
+            error
+        });
+   }
 })
 
 const logout = expressAsyncHandler(async (req: Request, res: Response) => { 
