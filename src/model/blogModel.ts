@@ -46,14 +46,18 @@ export interface IBlog extends mongoose.Document {
          type: Boolean,
             default: false
      },
-     liked: {
-         type: mongoose.Schema.Types.ObjectId,
-         ref: "User"
-     },
-     disliked: {
-         type: mongoose.Schema.Types.ObjectId,
+     liked: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
             ref: "User"
-     },
+        }
+     ],
+     disliked: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+               ref: "User"
+        }
+     ],
      image: {
             type: String,
      },
