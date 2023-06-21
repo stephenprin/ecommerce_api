@@ -8,7 +8,8 @@ import {
     unBlockUser,
     blockUser, refreshToken,
     updatePassword,
-    forgotPasswordToken
+    forgotPasswordToken,
+    resetPassword
     
 } from "../controller/userController";
 import { auth, isAdmin } from "../middlewares/authMiddleware";
@@ -18,7 +19,8 @@ const router = express.Router();
 
 router.post("/register", register)
 router.post("/login", login)
-router.post('/forgot-password',  forgotPasswordToken)
+router.post('/forgot-password', forgotPasswordToken)
+router.put('/reset-password/:token', resetPassword)
 router.get("/get-all-user",auth,requestAuth,isAdmin, getAllUser)
 router.post("/logout", logout)
 router.get("/get-user/:id",auth,requestAuth, getUserById)

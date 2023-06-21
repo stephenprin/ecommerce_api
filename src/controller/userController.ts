@@ -235,7 +235,7 @@ const forgotPasswordToken = expressAsyncHandler(async (req: Request, res: Respon
     }
     const resetToken = user.createPasswordResetToken();
     await user.save({ validateBeforeSave: false });
-    const resetUrl = `http://localhost:5000/resetPassword/${resetToken}`
+    const resetUrl = `http://localhost:5000/api/auth/reset-password/${resetToken}`
     const message = `Forgot your password? Please follow this link to reset your password ${resetUrl}.\nIf you didn't forget your password, please ignore this email!`;
     try { 
         const emailData={
