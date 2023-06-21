@@ -5,6 +5,8 @@ import generateToken from '../config/jwtToken';
 import validateMongooseId from '../utils/validateMongoseId';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import crypto from 'crypto';
+import { sendEmailWithArguments } from './emailController';
 
 
 
@@ -222,6 +224,53 @@ const updatePassword = expressAsyncHandler(async (req: Request, res: Response) =
     }
 });
 
+const forgotPasswordToken = expressAsyncHandler(async (req: Request, res: Response) => { 
+    const { email } = req.body;
+    if (!email) {
+      throw new Error("Please provide an email");
+    }
+    const user = await User.findOne({ email: email });
+    if (!user) { 
+        throw new Error("User not found");
+    }
+    const resetToken = user.createPasswordResetToken();
+    await user.save({ validateBeforeSave: false });
+    const resetUrl = `http://localhost:5000/resetPassword/${resetToken}`
+    const message = `Forgot your password? Please follow this link to reset your password ${resetUrl}.\nIf you didn't forget your password, please ignore this email!`;
+    try { 
+        const emailData={
+            to: user.email,
+            subject: "Your password reset token (valid for 10 min)",
+            text:user.firstname,
+            html:message
+        }
+        sendEmailWithArguments(emailData)
+       .then(() => {
+        console.log('Email sent successfully');
+        })
+       .catch((error) => {
+        console.error('Error sending email:', error);
+       });
+        
+        res.status(200).json({
+            message: "Token sent to email",
+            data: resetToken
+        })
+
+    }catch (error) {
+        user.passwordResetToken = undefined;
+        user.passwordResetExpires = undefined;
+        await user.save({ validateBeforeSave: false });
+        throw new Error("Something went wrong");
+    }
+
+})
+
+const resetPassword = expressAsyncHandler(async (req: Request, res: Response) => { 
+    const { token } = req.params;
+    const { password } = req.body;
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+})
 
 const logout = expressAsyncHandler(async (req: Request, res: Response) => { 
     try {
@@ -240,5 +289,7 @@ export {
     updateUser,
     blockUser, unBlockUser,
     refreshToken,
-    updatePassword
+    updatePassword,
+    forgotPasswordToken,
+    resetPassword
 }

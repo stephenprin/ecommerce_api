@@ -7,7 +7,8 @@ import {
     updateUser,
     unBlockUser,
     blockUser, refreshToken,
-    updatePassword
+    updatePassword,
+    forgotPasswordToken
     
 } from "../controller/userController";
 import { auth, isAdmin } from "../middlewares/authMiddleware";
@@ -17,6 +18,7 @@ const router = express.Router();
 
 router.post("/register", register)
 router.post("/login", login)
+router.post('/forgot-password',  forgotPasswordToken)
 router.get("/get-all-user",auth,requestAuth,isAdmin, getAllUser)
 router.post("/logout", logout)
 router.get("/get-user/:id",auth,requestAuth, getUserById)
