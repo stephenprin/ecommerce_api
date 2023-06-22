@@ -52,9 +52,55 @@ const updateBlog = expressAsyncHandler(async (req: Request, res: Response) => {
         });
         
     } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error
+        });
+    }
+});
+const getBlog = expressAsyncHandler(async (req: Request, res: Response) => { 
+    const id = req.params.id;
+    try {
+
+        const blog = await Blog.findByIdAndUpdate(id, {
+            $inc: { numViews: 1},
+        },
+            {new:true}
+            
+        )
+
+        res.status(200).json({
+            message: "Blog get successfully",
+            data: blog
+        });
+        
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal service error",
+            error
+        })
         
     }
 });
- export { createBlog, getAllBlogs,updateBlog }
+
+const deleteBlog = expressAsyncHandler(async (req: Request, res: Response) => { 
+    const id = req.params.id;
+    try {
+
+        const blog = await Blog.findByIdAndDelete(id);
+       
+        res.status(200).json({
+            message: "Blog deleted successfully",
+            data: blog
+        });
+        
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal server error",
+            error: error
+        });
+    }
+});
+ export { createBlog, getAllBlogs,updateBlog, getBlog, deleteBlog }
 
 
