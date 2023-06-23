@@ -11,8 +11,8 @@ export interface IBlog extends mongoose.Document {
     description: string;
     isLiked: boolean;
     isDisliked: boolean;
-    liked: mongoose.Schema.Types.ObjectId;
-    disliked: mongoose.Schema.Types.ObjectId;
+    likes: Array<string>;
+    dislikes: Array<string>;
     image: string;
     author: string;
 
@@ -46,13 +46,13 @@ export interface IBlog extends mongoose.Document {
          type: Boolean,
             default: false
      },
-     liked: [
+     likes: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User"
         }
      ],
-     disliked: [
+     dislikes: [
         {
             type: mongoose.Schema.Types.ObjectId,
                ref: "User"

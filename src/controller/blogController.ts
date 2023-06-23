@@ -101,6 +101,88 @@ const deleteBlog = expressAsyncHandler(async (req: Request, res: Response) => {
         });
     }
 });
- export { createBlog, getAllBlogs,updateBlog, getBlog, deleteBlog }
+
+const likedBlog = expressAsyncHandler(async (req: Request, res: Response) => {
+    const { blogId } = req.body;
+    validateMongooseId(blogId)
+    const blog = await Blog.findById(blogId);
+   
+    const userLoginId = req.user?.id;
+    const isLikes = blog?.isLiked;
+    const alreadyDisliked = blog?.dislikes?.find((userId) => userId?.toString() === userLoginId?.toString())
+    if (alreadyDisliked) {
+        const blog = await Blog.findByIdAndUpdate(blogId, {
+            $pull: { dislikes: userLoginId },
+            isDisliked:false,
+        }, { new: true });
+        res.status(200).json({
+            message: "Blog disliked successfully",
+            data: blog
+        });
+    }
+    if (isLikes) {
+        const blog = await Blog.findByIdAndUpdate(blogId, {
+            $pull: { likes: userLoginId },
+            isLiked:false
+        }, { new: true });
+        res.status(200).json({
+            message: "Blog unLiked successfully",
+            data: blog
+        });
+    } else {
+        const blog = await Blog.findByIdAndUpdate(blogId, {
+            $push: { likes: userLoginId },
+            isLiked:true
+        }, { new: true });
+        res.status(200).json({
+            message: "Blog liked successfully",
+            data: blog
+        });
+    }
+   
+   
+})
+
+const disLikedBlog = expressAsyncHandler(async (req: Request, res: Response) => {
+    const { blogId } = req.body;
+    validateMongooseId(blogId)
+    const blog = await Blog.findById(blogId);
+   
+    const userLoginId = req.user?.id;
+    const isDisliked = blog?.isDisliked;
+    const alreadyLiked = blog?.likes?.find((userId) => userId?.toString() === userLoginId?.toString())
+    if (alreadyLiked) {
+        const blog = await Blog.findByIdAndUpdate(blogId, {
+            $pull: { likes: userLoginId },
+            isLiked:false,
+        }, { new: true });
+        res.status(200).json({
+            message: "Blog liked successfully",
+            data: blog
+        });
+    }
+    if (isDisliked) {
+        const blog = await Blog.findByIdAndUpdate(blogId, {
+            $pull: { dislikes: userLoginId },
+            isDisliked:false
+        }, { new: true });
+        res.status(200).json({
+            message: "Blog unDisliked successfully",
+            data: blog
+        });
+    } else {
+        const blog = await Blog.findByIdAndUpdate(blogId, {
+            $push: { dislikes: userLoginId },
+            isDisliked:true
+        }, { new: true });
+        res.status(200).json({
+            message: "Blog Disliked successfully",
+            data: blog
+        });
+    }
+   
+   
+})
+ export { createBlog, getAllBlogs,updateBlog, getBlog, deleteBlog, likedBlog, disLikedBlog  }
 
 
