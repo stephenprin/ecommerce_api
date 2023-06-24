@@ -32,7 +32,7 @@ export interface IBlog extends mongoose.Document {
      },
      category: {
          type: String,
-            enum: ["Technology", "Sports", "Politics", "Entertainment", "Fashion"]
+         
      },
      description: { 
          type: String,

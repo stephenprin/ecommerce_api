@@ -43,6 +43,7 @@ const createBlog = expressAsyncHandler(async (req: Request, res: Response) => {
 
 const updateBlog = expressAsyncHandler(async (req: Request, res: Response) => { 
     const id = req.params.id;
+    validateMongooseId(id);
     try {
 
         const updateBlog = await Blog.findByIdAndUpdate(id, req.body, { new: true });
@@ -60,9 +61,10 @@ const updateBlog = expressAsyncHandler(async (req: Request, res: Response) => {
 });
 const getBlog = expressAsyncHandler(async (req: Request, res: Response) => { 
     const id = req.params.id;
+    validateMongooseId(id);
     try {
-
-        const blog = await Blog.findByIdAndUpdate(id, {
+        const blog = await Blog.findById(id).populate("likes").populate("dislikes");
+        const updateblog = await Blog.findByIdAndUpdate(id, {
             $inc: { numViews: 1},
         },
             {new:true}
@@ -85,6 +87,8 @@ const getBlog = expressAsyncHandler(async (req: Request, res: Response) => {
 
 const deleteBlog = expressAsyncHandler(async (req: Request, res: Response) => { 
     const id = req.params.id;
+
+    validateMongooseId(id);
     try {
 
         const blog = await Blog.findByIdAndDelete(id);
@@ -104,6 +108,7 @@ const deleteBlog = expressAsyncHandler(async (req: Request, res: Response) => {
 
 const likedBlog = expressAsyncHandler(async (req: Request, res: Response) => {
     const { blogId } = req.body;
+   
     validateMongooseId(blogId)
     const blog = await Blog.findById(blogId);
    
