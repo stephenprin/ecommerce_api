@@ -1,5 +1,5 @@
 import express from 'express';
-import { createCategory, updateCategory, deleteCategory,getAllCategory, getCategory } from '../controller/prodCategoryController';
+import { createCategory, updateCategory, deleteCategory,getAllCategory, getCategory } from '../controller/blogCategoryController';
 const router = express.Router();
 import { auth, isAdmin } from "../middlewares/authMiddleware";
 import {requestAuth} from "../middlewares/requestAuth";

@@ -4,7 +4,7 @@ import cors from 'cors';
 import database from './config/database';
 
 
-import { auth, product, blog, prodcategory} from './routes';  
+import { auth, product, blog, prodcategory, blogcategory,  brand} from './routes';  
 import { errorHandler, notFound } from './middlewares/errorHandle';
 import cookieSession from 'cookie-session';
  
@@ -39,6 +39,8 @@ app.use("/api/auth", auth);
 app.use("/api/product", product);
 app.use("/api/blog", blog);
 app.use("/api/prodcategory", prodcategory);
+app.use("/api/blogcategory", blogcategory);
+app.use("/api/brand", brand);
 
 app.use(notFound);
 app.use(errorHandler);

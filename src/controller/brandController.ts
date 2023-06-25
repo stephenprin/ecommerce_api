@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
-import Category from "../model/prodCategoryModel";
+import Brand from "../model/brandModel";
 import expressAsyncHandler from 'express-async-handler';
 import validateMongooseId from "../utils/validateMongoseId";
 
 
-const createCategory = expressAsyncHandler(async (req: Request, res: Response) => {
+const createBrand = expressAsyncHandler(async (req: Request, res: Response) => {
     try {
-        const category = await Category.create(req.body)
+        const brand = await Brand.create(req.body)
         res.status(201).json({
-            message: "Category created  successfully",
-            data: category
+            message: "Brand created  successfully",
+            data: brand
         })
         
     } catch (error) {
@@ -21,15 +21,15 @@ const createCategory = expressAsyncHandler(async (req: Request, res: Response) =
     }
 })
 
-const updateCategory = expressAsyncHandler(async (req: Request, res: Response) => {
+const updateBrand = expressAsyncHandler(async (req: Request, res: Response) => {
     try {
         const id = req.params.id;
         console.log(id)
         validateMongooseId(id)
-        const category = await Category.findByIdAndUpdate(id, req.body,{new:true})
+        const brand = await Brand.findByIdAndUpdate(id, req.body,{new:true})
         res.status(201).json({
-            message: "Category updated  successfully",
-            data: category
+            message: "Brand updated  successfully",
+            data: brand
         })
         
     } catch (error) {
@@ -40,15 +40,15 @@ const updateCategory = expressAsyncHandler(async (req: Request, res: Response) =
         
     }
 })
-const deleteCategory = expressAsyncHandler(async (req: Request, res: Response) => {
+const deleteBrand = expressAsyncHandler(async (req: Request, res: Response) => {
     try {
         const id = req.params.id;
         console.log(id)
         validateMongooseId(id)
-        const category = await Category.findByIdAndDelete(id, {new:true})
+        const brand = await Brand.findByIdAndDelete(id, {new:true})
         res.status(201).json({
-            message: "Category delete  successfully",
-            data: category
+            message: "Brand delete  successfully",
+            data: brand
         })
         
     } catch (error) {
@@ -59,12 +59,12 @@ const deleteCategory = expressAsyncHandler(async (req: Request, res: Response) =
         
     }
 })
-const getAllCategory = expressAsyncHandler(async (req: Request, res: Response) => {
+const getAllBrand = expressAsyncHandler(async (req: Request, res: Response) => {
     try {
-        const category = await Category.find();
+        const brand = await Brand.find();
         res.status(201).json({
             message: "All categories",
-            data: category
+            data: brand
         })
         
     } catch (error) {
@@ -75,14 +75,14 @@ const getAllCategory = expressAsyncHandler(async (req: Request, res: Response) =
         
     }
 })
-const getCategory = expressAsyncHandler(async (req: Request, res: Response) => {
+const getBrand = expressAsyncHandler(async (req: Request, res: Response) => {
     try {
         const id = req.params.id;
         validateMongooseId(id)
-        const category = await Category.findById(id);
+        const brand = await Brand.findById(id);
         res.status(201).json({
             message: "successfully",
-            data: category
+            data: brand
         })
         
     } catch (error) {
@@ -95,5 +95,5 @@ const getCategory = expressAsyncHandler(async (req: Request, res: Response) => {
 })
 
  
-export { createCategory, updateCategory, deleteCategory, getAllCategory,getCategory }
+export { createBrand, updateBrand, deleteBrand, getAllBrand,getBrand }
 

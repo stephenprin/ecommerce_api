@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import Category from "../model/prodCategoryModel";
+import BlogCategory from "../model/blogCategoryModel";
 import expressAsyncHandler from 'express-async-handler';
 import validateMongooseId from "../utils/validateMongoseId";
 
 
 const createCategory = expressAsyncHandler(async (req: Request, res: Response) => {
     try {
-        const category = await Category.create(req.body)
+        const category = await BlogCategory.create(req.body)
         res.status(201).json({
             message: "Category created  successfully",
             data: category
@@ -26,7 +26,7 @@ const updateCategory = expressAsyncHandler(async (req: Request, res: Response) =
         const id = req.params.id;
         console.log(id)
         validateMongooseId(id)
-        const category = await Category.findByIdAndUpdate(id, req.body,{new:true})
+        const category = await BlogCategory.findByIdAndUpdate(id, req.body,{new:true})
         res.status(201).json({
             message: "Category updated  successfully",
             data: category
@@ -45,7 +45,7 @@ const deleteCategory = expressAsyncHandler(async (req: Request, res: Response) =
         const id = req.params.id;
         console.log(id)
         validateMongooseId(id)
-        const category = await Category.findByIdAndDelete(id, {new:true})
+        const category = await BlogCategory.findByIdAndDelete(id, {new:true})
         res.status(201).json({
             message: "Category delete  successfully",
             data: category
@@ -61,7 +61,7 @@ const deleteCategory = expressAsyncHandler(async (req: Request, res: Response) =
 })
 const getAllCategory = expressAsyncHandler(async (req: Request, res: Response) => {
     try {
-        const category = await Category.find();
+        const category = await BlogCategory.find();
         res.status(201).json({
             message: "All categories",
             data: category
@@ -79,7 +79,7 @@ const getCategory = expressAsyncHandler(async (req: Request, res: Response) => {
     try {
         const id = req.params.id;
         validateMongooseId(id)
-        const category = await Category.findById(id);
+        const category = await BlogCategory.findById(id);
         res.status(201).json({
             message: "successfully",
             data: category
