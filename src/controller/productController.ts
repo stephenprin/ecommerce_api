@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Product from "../model/productModel";
 import expressAsyncHandler from 'express-async-handler';
 import slugify from "slugify";
+import User from "../model/userModel";
 
 const createProduct = expressAsyncHandler(async (req: Request, res: Response) => { 
     try {
@@ -90,27 +91,28 @@ const getProductById = expressAsyncHandler(async (req: Request, res: Response) =
     }
 })
  
-const updateProduct = expressAsyncHandler(async (req: Request, res: Response) => { 
-    if(req.body.title){
+const updateProduct = expressAsyncHandler(async (req: Request, res: Response) => {
+    if (req.body.title) {
         req.body.slug = slugify(req.body.title, {
             lower: true,
             trim: true
         })
     }
     const { id } = req.params;
-    try { 
+    try {
         const productupdate = await Product.findByIdAndUpdate(id, req.body, { new: true });
         res.status(200).json({
             message: "Product updated successfully",
             data: productupdate
         });
-    } catch (error) { 
+    } catch (error) {
         res.status(404).json({
             message: "Product not found",
             error
         })
     }
 })
+
 
 const deleteProduct = expressAsyncHandler(async (req: Request, res: Response) => { 
     const { id } = req.params;
@@ -127,4 +129,42 @@ const deleteProduct = expressAsyncHandler(async (req: Request, res: Response) =>
         })
     }
 });
-export { createProduct,getAllProducts ,getProductById, updateProduct, deleteProduct}
+
+const addToWishList= expressAsyncHandler(async (req: Request, res: Response) => { 
+    const { id } = req.user;
+    const { productId } = req.body;
+
+    try {
+        const user =await User.findById(id);
+         
+        const alreadyAdded = user?.wishlist.find((id: string) => id.toString() === productId)
+        if (alreadyAdded) {
+            let user = await User.findByIdAndUpdate(id, {
+                $pull: { wishlist: productId },
+               
+            },
+            
+            { new: true })
+            res.status(200).json({
+                message: "Product remove successfully",
+                data:user
+            });
+        } else {
+            let user = await User.findByIdAndUpdate(id, {
+                $push:{wishlist:productId}
+            }, {new: true})
+            res.status(200).json({
+                message: "Product add successfully",
+                data:user
+            });
+            
+        }
+    } catch (error) {
+        res.status(404).json({
+            message: "Internal server error",
+            error
+        })
+    }
+});
+
+export { createProduct,getAllProducts ,getProductById, updateProduct, deleteProduct,addToWishList}
